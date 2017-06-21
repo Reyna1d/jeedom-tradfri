@@ -1,0 +1,20 @@
+== Tradfri
+
+=== Description
+Plugin permettant d'utiliser le système Tradfri de chez IKEA
+
+'''
+=== Configuration
+include::configuration.asciidoc[]
+
+'''
+=== FAQ
+include::faq.asciidoc[]
+
+'''
+=== Troubleshooting
+include::troubleshooting.asciidoc[]
+
+'''
+=== Changelog
+include::changelog.asciidoc[]

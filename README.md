@@ -1,0 +1,1 @@
+# pluginjeedom-tradfri

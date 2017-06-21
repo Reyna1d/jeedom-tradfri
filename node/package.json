@@ -1,0 +1,26 @@
+{
+  "name": "Tradfri",
+  "version": "0.1.0",
+  "private": true,
+  "description": "",
+  "main": "./app",
+  "author": {
+    "name": "Original code by Reynald Ligiardi"
+  },
+  "keywords": [
+    "Jeedom",
+    "Tradfri",
+    "IKEA"
+  ],
+  "maintainers": [
+    {
+      "name": "Reynald Ligiardi",
+      "email": "reynald.ligiardi@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "d3-queue": "*",    
+    "command-exists" : "*",
+    "winston" : "*"
+  }
+}

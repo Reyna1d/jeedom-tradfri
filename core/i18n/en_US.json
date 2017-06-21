@@ -1,0 +1,32 @@
+{
+    "plugins\/tradfri\/core\/php\/jeetradfri.php": {
+        "Evènement : ": "Event : ",
+        "Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (jeeTradfri)":"Invalid API key, you are not allowed to do this action (jeeTradfri)"
+    },
+    "plugins\/tradfri/core\/class\/tradfri.class.php": {
+        "Lancement du démon Tradfri": "Launching of Tradfri deamon",
+        "Démon Tradfri lancé": "Tradfri deamon launched",
+        "Impossible de lancer le démon Tradfri": "Not possible to launch Tradfri deamon"
+    },
+    "plugins\/tradfri\/desktop\/php\/tradfri.php": {
+        "Liste équipements Tradfri": "List of Tradfri devices",
+        "Nom de l'équipement Tradfri": "Name of Tradfri< device",
+        "ID": "ID",
+        "Equipement": "Device",
+        "Ajouter une commande": "Add command",
+        "Logical ID (info) ou Commande brute (action)": "Logical ID (info) or Raw command (action)",
+        "Paramètres": "Parameters",
+    },
+    "plugins\/tradfri\/desktop\/js\/tradfri.js": {
+        "Le démon a été correctement arrêté : il se relancera automatiquement dans 1 minute": "The deamon have been correctly stopped : it will be automatically relaunched in 1 minute",
+        "La valeur de la commande vaut par defaut la commande": "The command value is the command by default",
+        "Aucune": "None",
+        "Historiser": "History",
+        "Afficher": "Display",
+        "Evénement": "Event",
+        "Inverser": "Reverse",
+        "Lifetime cache": "Lifetime cache",
+        "Unité": "Unite",
+        "Tester": "Test"
+    }
+}
