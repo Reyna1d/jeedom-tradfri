@@ -1,7 +1,6 @@
 {
 	"id" : "tradfri",
 	"name" : "IKEA Trådfri",
-	"version" : 0.9,
 	"description" : "Plugin pour se connecter avec les objets connecté Trådfri d'IKEA",
 	"licence" : "AGPL",
 	"author" : "Reynald Ligiardi",
