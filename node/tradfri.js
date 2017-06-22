@@ -77,6 +77,8 @@ function Tradfri (host, key, port, debuglevel){
 		exec(coapCmd, execConfig, (error, stdout, stderr) => {
 			if (error) {
 				log.error('Erreur d\'initialisation ');
+				log.error(error);
+				log.error(stderr);
 				setTimeout(function(){
 					log.info('Nouvelle tentative d\'initialisation');
 					cthis.init();

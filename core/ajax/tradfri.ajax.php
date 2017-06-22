@@ -32,18 +32,18 @@ try {
 		
         
 		log::add ('tradfri','event','scanDevices');
+
 		$out = $recv = '';		
 		$buffersize = 1460;
 		do {
 			if ($out != '' && $recv != '') break;
 			$recv = '';
 			$recv = socket_read($socket,$buffersize);			
-//			log::add ('tradfri','info',$recv);
 			if ($recv != '') $out .= $recv;			
 		} while (strlen($recv)==$buffersize);
 		socket_close($socket);
 		log::add ('tradfri','info','recu : '.$out);
-
+/*
 		$devices = json_decode(trim($out),true);
 		if (empty($devices)) {
 			log::add('tradfri','info','Impossible de parser (JSON) le résultat du socket : '.$out);		
@@ -89,7 +89,7 @@ try {
 				log::add('tradfri', 'debug', 'Pas équipement trouvé pour : ' . $id . "\n");
 			}
 		};
-
+*/
 		ajax::success($out);
     }
 	

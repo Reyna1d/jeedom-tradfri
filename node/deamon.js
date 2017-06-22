@@ -28,7 +28,23 @@ var server = net.createServer(function (socket) {
 			case 'scanDevices' : //Scan de tous les devices présents
 				var devices = tradfri.getAllDevices()
 				log.debug('Tradfri Socket : reponse = '+JSON.stringify(devices));
-				socket.write(JSON.stringify(devices));
+
+				//jeeApi = urlJeedom + "&scan="+encodeURIComponent(JSON.stringify(device));
+				log.debug('Tradfri Socket : URL = '+urlJeedom);
+				request.post({url : urlJeedom, form: {scan:JSON.stringify(devices)}}, function (error, response, body) {
+					if (!error && response.statusCode == 200) {
+						log.info('Return OK from Jeedom');
+						socket.write('reload');
+					}else{
+						log.error('Error : '+error);				
+						log.error('response : '+JSON.stringify(response));
+						log.error('body : '+body);
+					}
+				});
+
+
+
+				//socket.write(JSON.stringify(devices));
 				break;
 
 			case 'setValue' : 
