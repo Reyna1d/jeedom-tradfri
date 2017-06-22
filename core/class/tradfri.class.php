@@ -62,11 +62,11 @@ class tradfri extends eqLogic {
 		$colors = realpath(dirname(__FILE__) . '/../../node/node_modules/colors');
 		$return['progress_file'] = '/tmp/tradfri_dep';
 		
-		#if (is_dir($d3) && is_dir($request) && is_dir($simplenodelogger) && is_dir($colors)) {
+		if (is_dir($d3) && is_dir($request) && is_dir($simplenodelogger) && is_dir($colors)) {
 			$return['state'] = 'ok';
-		#} else {
-		#	$return['state'] = 'nok';
-		#}
+		} else {
+			$return['state'] = 'nok';
+		}
 		return $return;
 	}
 
