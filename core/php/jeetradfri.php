@@ -37,3 +37,56 @@ if (isset($_GET['state'])) {
 	echo 'OK';
 }
 
+
+if (isset($_POST['scan'])) {
+	log::add ('tradfri', 'debug', "Recu configuration tradfri");
+	log::add ('tradfri', 'debug','scan : '.$_POST['scan']);
+
+	$devices = json_decode(trim($_POST['scan']),true);
+	if (empty($devices)) {
+		log::add('tradfri','info','Impossible de parser (JSON) le résultat du socket : '.$out);		
+	};
+	foreach($devices as $key => $device){			
+		log::add('tradfri','debug','Device '.$key.' => '.json_encode($device));						
+		$id = $device['id'];	
+		$tradfri = eqLogic::byLogicalId($id, 'tradfri');
+		if (!is_object($tradfri)) {
+			log::add('tradfri', 'debug', 'Aucun équipement trouvé pour : ' . $id . "\n");
+			$eqLogic = new eqLogic();
+			$eqLogic->setEqType_name('tradfri');
+			$eqLogic->setIsEnable(1);
+			$eqLogic->setLogicalId($id);
+			$eqLogic->setName($device['name']);
+			$eqLogic->setConfiguration('url', $device['url']);			
+			$eqLogic->setConfiguration('manufacturer', $device['manufacturer']);			
+			$eqLogic->setConfiguration('serialNumber', $device['serialNumber']);
+			$eqLogic->setConfiguration('firmware', $device['firmware']);	
+			log::add('tradfri', 'debug','Generate config type '.$device['tradfri_type']);
+			if ($device['tradfri_type']==0){
+				$eqLogic->setConfiguration('modelNumber', $device['modelNumber']);
+				//$eqLogic->applyModuleConfiguration(str_replace(' ', '_',trim($device['modelNumber'])));
+				$template = str_replace(' ', '_',trim($device['modelNumber']));
+			} else {
+				$eqLogic->setConfiguration('modelNumber', 'group');
+				//$eqLogic->applyModuleConfiguration('group');
+				$template = 'group';
+			};			
+			$eqLogic->save();
+		}else{
+			log::add('tradfri', 'info', 'Equipement déjà existant : ' . $id);
+			$template = str_replace(' ', '_',trim($device['modelNumber']));
+		};
+		//MAJ des commandes
+		$tradfri=eqLogic::byLogicalId($id, 'tradfri');
+		if (is_object($tradfri)){
+			$template = str_replace(' ', '_',trim($tradfri->getConfiguration('modelNumber')));				
+			$tradfri->applyModuleConfiguration($template);
+		}else{
+			log::add('tradfri', 'debug', 'Pas équipement trouvé pour : ' . $id . "\n");
+		}
+	};
+	//$var = urldecode($_GET['state']);
+	//log::add ('tradfri', 'debug',$var);
+	//tradfri::updateStatus($var);
+	echo 'OK';
+}
