@@ -62,10 +62,16 @@ function Tradfri (host, key, port, debuglevel){
 	this.TRADFRI_TYPE_DEVICE = TRADFRI_TYPE_DEVICE;
 	this.TRADFRI_TYPE_GROUP = TRADFRI_TYPE_GROUP;
 	this.TRADFRI_TYPE_GATEWAY = TRADFRI_TYPE_GATEWAY;
+	this.TRADFRI_CONNECTED = TRADFRI_CONNECTED;
+	this.TRADFRI_DISCONNECTED = TRADFRI_DISCONNECTED;
+
 	//this.init();
 	
 //}
-
+	this.initOK = function(){
+		return this.state==TRADFRI_CONNECTED;
+	}
+	
 //Tradfri.prototype.init = function() {
 	this.init = function() {
 		var cthis = this;

@@ -8,9 +8,13 @@ TRADFRI_bulb_E26_WS_opal_980lm		:
 TRADFRI_bulb_E26_WS_clear_950lm		: 
 TRADFRI_bulb_E12_WS_opal_400lm		: 
 TRADFRI_bulb_E27_opal_1000lm 		: ok
+FLOALT_panel_WS_30x30
+FLOALT_panel_WS_30x90
+FLOALT_panel_WS_90x30
+FLOALT_panel_WS_60x60
 SURTE
 JORMLIEN
-FLOALT
+
 
 
 Key	Value

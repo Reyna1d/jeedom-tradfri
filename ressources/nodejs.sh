@@ -11,10 +11,10 @@ if [ ! -d "$DIRECTORY" ]; then
 fi
 sudo chown -R www-data $DIRECTORY
 echo 10 > /tmp/tradfri_dep
-actual=`node -v`;
+actual=`nodejs -v`;
 echo "Version actuelle : ${actual}"
 
-if [[ $actual == *"4."* || $actual == *"5."* ]]
+if [[ $actual == *"4."* || $actual == *"5."* || $actual == *"6."* || $actual == *"7."* || $actual == *"8."*]]
 then
   echo "Ok, version suffisante";
 else
@@ -36,6 +36,7 @@ else
 
   if [[ $arch == "aarch64" ]]
   then
+    echo "Architecture 64bits détecté, utilisation du paquet pour arm64"
     wget http://dietpi.com/downloads/binaries/c2/nodejs_5-1_arm64.deb
     sudo dpkg -i nodejs_5-1_arm64.deb
     sudo ln -s /usr/local/bin/node /usr/local/bin/nodejs
@@ -49,7 +50,7 @@ else
     sudo apt-get install -y nodejs
   fi
   
-  new=`node -v`;
+  new=`nodejs -v`;
   echo "Version actuelle : ${new}"
 fi
 
