@@ -81,6 +81,11 @@ $('#bt_scantrafri').on('click', function () {
     });
 });
 
+$('#bt_tradfriNetwork').on('click', function () {
+    $('#md_modal').dialog({title: "{{Réseaux tradfri}}"});
+    $('#md_modal').load('index.php?v=d&plugin=tradfri&modal=network').dialog('open');
+});
+
 function addCmdToTable(_cmd) {
     if (!isset(_cmd)) {
         var _cmd = {configuration: {}};

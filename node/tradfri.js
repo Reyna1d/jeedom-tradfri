@@ -36,6 +36,8 @@ function Tradfri (host, key, port, debuglevel){
 //	commandExists('coap-client').catch(() => {
 //      throw new Error('[Coap Client] libcoap is not found! Make sure coap-client is available on the command line!');
 //    });
+	if (debuglevel) log.setLevel(debuglevel);
+
 	if(os.arch()=='arm'){
 		this.pathClientCoap = __dirname+'/bin/coap-client-'+os.platform()+'-32';
 	}else{
@@ -49,7 +51,7 @@ function Tradfri (host, key, port, debuglevel){
     if (typeof host === 'undefined' || host === null) {
       throw new Error('[Coap Client] You must specify a valid host!');
     }
-	if (debuglevel) log.setLevel(debuglevel);
+	
 
 	events.EventEmitter.call(this);	
 	this.timer = null;

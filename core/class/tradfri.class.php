@@ -116,7 +116,6 @@ class tradfri extends eqLogic {
 		
 		//$url = network::getNetworkAccess('internal', 'proto:ip') . '/plugins/tradfri/core/php/jeetradfri.php?apikey=' . jeedom::getApiKey('tradfri');
 		$url = 'http://127.0.0.1'. '/plugins/tradfri/core/php/jeetradfri.php?apikey=' . jeedom::getApiKey('tradfri');
-		
 
 		tradfri::launch_svc($url, $ipGateway, $portGateway, $securitykeyGateway, $socketport);
 	}
@@ -131,22 +130,22 @@ class tradfri extends eqLogic {
 		log::add('tradfri', 'debug', 'Lancement du démon tradfri : ' . $cmd);
 		$result = exec('nohup ' . $cmd . ' >> ' . log::getPathToLog('tradfricmd') . ' 2>&1 &');
 		if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
-		log::add('tradfri', 'error', $result);
-		return false;
+			log::add('tradfri', 'error', $result);
+			return false;
 		}
 
 		$i = 0;
 		while ($i < 30) {
-		$deamon_info = self::deamon_info();
-		if ($deamon_info['state'] == 'ok') {
-			break;
-		}
-		sleep(1);
-		$i++;
+			$deamon_info = self::deamon_info();
+			if ($deamon_info['state'] == 'ok') {
+				break;
+			}
+			sleep(1);
+			$i++;
 		}
 		if ($i >= 30) {
-		log::add('tradfri', 'error', 'Impossible de lancer le démon tradfri, vérifiez le port', 'unableStartDeamon');
-		return false;
+			log::add('tradfri', 'error', 'Impossible de lancer le démon tradfri, vérifiez le port', 'unableStartDeamon');
+			return false;
 		}
 		message::removeAll('tradfri', 'unableStartDeamon');
 		log::add('tradfri', 'info', 'Démon tradfri lancé');
@@ -159,13 +158,13 @@ class tradfri extends eqLogic {
 		log::add('tradfri', 'info', 'Arrêt du service tradfri');
 		$deamon_info = self::deamon_info();
 		if ($deamon_info['state'] == 'ok') {
-		sleep(1);
-		exec('kill -9 $(ps aux | grep "tradfri/node/deamon.js" | awk \'{print $2}\')');
+			sleep(1);
+			exec('kill -9 $(ps aux | grep "tradfri/node/deamon.js" | awk \'{print $2}\')');
 		}
 		$deamon_info = self::deamon_info();
 		if ($deamon_info['state'] == 'ok') {
-		sleep(1);
-		exec('sudo kill -9 $(ps aux | grep "tradfri/node/deamon.js" | awk \'{print $2}\')');
+			sleep(1);
+			exec('sudo kill -9 $(ps aux | grep "tradfri/node/deamon.js" | awk \'{print $2}\')');
 		}
 	}
 
