@@ -122,13 +122,12 @@ class tradfri extends eqLogic {
 
 	public static function launch_svc($url, $ip, $port, $key, $socketport) {
 		$log = log::convertLogLevel(log::getLogLevel('tradfri'));
-		$tradfri_path = realpath(dirname(__FILE__) . '/../../node');		
-		#$node_path = 'n as 6.11.0';
-		log::add('tradfri', 'info', $node_path);
-		#$cmd = 'nice -n 19 '.$node_path.' ' . $tradfri_path . '/deamon.js ' . $url . ' ' . $ip . ' ' . $port . ' ' . $key . ' ' . $log . ' ' . $socketport;
+		$tradfri_path = realpath(dirname(__FILE__) . '/../../node');			
+		
 		$cmd = 'nice -n 19 nodejs ' . $tradfri_path . '/deamon.js ' . $url . ' ' . $ip . ' ' . $port . ' ' . $key . ' ' . $log . ' ' . $socketport;
 		log::add('tradfri', 'debug', 'Lancement du démon tradfri : ' . $cmd);
-		$result = exec('nohup ' . $cmd . ' >> ' . log::getPathToLog('tradfricmd') . ' 2>&1 &');
+
+		$result = exec('sudo ' . $cmd . ' >> ' . log::getPathToLog('tradfricmd') . ' 2>&1 &');
 		if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
 			log::add('tradfri', 'error', $result);
 			return false;
