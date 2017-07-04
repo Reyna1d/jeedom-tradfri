@@ -127,7 +127,7 @@ class tradfri extends eqLogic {
 		$cmd = 'nice -n 19 nodejs ' . $tradfri_path . '/deamon.js ' . $url . ' ' . $ip . ' ' . $port . ' ' . $key . ' ' . $log . ' ' . $socketport;
 		log::add('tradfri', 'debug', 'Lancement du démon tradfri : ' . $cmd);
 
-		$result = exec('sudo ' . $cmd . ' >> ' . log::getPathToLog('tradfricmd') . ' 2>&1 &');
+		$result = exec('nohup ' . $cmd . ' >> ' . log::getPathToLog('tradfricmd') . ' 2>&1 &');
 		if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
 			log::add('tradfri', 'error', $result);
 			return false;
