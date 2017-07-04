@@ -26,6 +26,7 @@ var server = net.createServer(function (socket) {
 		log.debug('Tradfri Socket : message = '+JSON.stringify(message));
 		switch (message.action) {
 			case 'scanDevices' : //Scan de tous les devices présents
+			if(tradfri.initOK()){			
 				var devices = tradfri.getAllDevices()
 				log.debug('Tradfri Socket : reponse = '+JSON.stringify(devices));
 
@@ -41,7 +42,10 @@ var server = net.createServer(function (socket) {
 						log.error('body : '+body);
 					}
 				});
-
+			}else{
+				log.info('gateway non initialisée, scan impossible pour l\'instant');
+				socket.write('scan_impossible');
+			}
 
 
 				//socket.write(JSON.stringify(devices));

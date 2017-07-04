@@ -90,3 +90,18 @@ if (isset($_POST['scan'])) {
 	//tradfri::updateStatus($var);
 	echo 'OK';
 }
+
+
+$results = json_decode(file_get_contents("php://input"), true);
+log::add('tradfri', 'debug', $results);
+if (!is_array($results)) {
+	die();
+}
+
+if (isset($results['network'])) {
+	event::add('jeedom::alert', array(
+		'level' => 'danger',
+		'page' => 'tradfri',
+		'message' => __('Le réseau est en erreur sur le serveur ', __FILE__),
+	));
+}

@@ -64,13 +64,26 @@ $('#bt_scantrafri').on('click', function () {
         },
         dataType: 'json',
         global: true,
-        error: function(request, status, error) {},
+        error: function(request, status, error) {
+            $('#div_alert').showAlert({message: error.message, level: 'danger'});
+        },
         success: function(data) {   
             //Le scan viens de se terminer
-            //On refresh la page
-            window.location.reload();
+            debugger;
+            switch (data) {
+                case 'scan_impossible': //Scan impossible
+                    $('#div_alert').showAlert({message: '{{L\'initialisation de la passerelle Tradfri est en cours. Veuillez réessayer plus tard.}}', level: 'warning'});
+                case 'reload': //On refresh la page
+                    window.location.reload();        
+                    break;
+            }
         }
     });
+});
+
+$('#bt_tradfriNetwork').on('click', function () {
+    $('#md_modal').dialog({title: "{{Réseaux tradfri}}"});
+    $('#md_modal').load('index.php?v=d&plugin=tradfri&modal=network').dialog('open');
 });
 
 function addCmdToTable(_cmd) {
