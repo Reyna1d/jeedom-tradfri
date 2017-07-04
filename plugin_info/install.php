@@ -24,6 +24,8 @@ function tradfri_install() {
 
 function tradfri_update() {
 	log::add('tradfri', 'debug', 'Update du Plugin Tradfri IKEA');
+	$resource_path = realpath(dirname(__FILE__) . '/../ressources');
+	passthru('/bin/bash ' . $resource_path . '/maj.sh ' . $resource_path . ' > ' . log::getPathToLog('tradfri') . ' 2>&1 &');
 }
 
 function tradfriremove() {
