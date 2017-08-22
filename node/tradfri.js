@@ -30,19 +30,27 @@ const execConfig = {
   timeout: 5000
 };
 
-
-
 function Tradfri (host, key, port, debuglevel){
-//	commandExists('coap-client').catch(() => {
-//      throw new Error('[Coap Client] libcoap is not found! Make sure coap-client is available on the command line!');
-//    });
 	if (debuglevel) log.setLevel(debuglevel);
 
-	if(os.arch()=='arm'){
-		this.pathClientCoap = __dirname+'/bin/coap-client-'+os.platform()+'-32';
-	}else{
-		this.pathClientCoap = __dirname+'/bin/coap-client-'+os.platform();
+	switch (os.arch()) {
+		case 'arm':
+			this.pathClientCoap = __dirname+'/bin/coap-client-'+os.platform()+'-32';
+			break;
+		case 'arm64':
+			this.pathClientCoap = __dirname+'/bin/coap-client-'+os.platform();
+			break;
+		case 'ia32':
+		case 'x64':
+		case 'x86':
+		case 'x32':
+			this.pathClientCoap = __dirname+'/bin/coap-client-'+os.platform()+'-intel32';
+			break;
+		default:
+			this.pathClientCoap = __dirname+'/bin/coap-client-'+os.platform();
+			break;
 	}
+
 	if (fs.existsSync(this.pathClientCoap)) {
 		log.info('Client Coap OK');
 	}else{

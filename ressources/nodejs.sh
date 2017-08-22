@@ -23,7 +23,7 @@ else
   sudo apt-get -y --purge autoremove nodejs npm
   arch=`arch`;
   echo 20 > /tmp/tradfri_dep
-
+  echo "Architecture : ${arch}"
   if [[ $arch == "armv6l" ]]
   then
     echo "Raspberry 1 détecté, utilisation du paquet pour armv6"
@@ -63,6 +63,7 @@ echo "MAJ des droits sur les clients COAP"
 chmod +x coap-client-linux
 chmod +x coap-client-linux-32
 chmod +x coap-client-darwin 
+chmod +x coap-client-linux-intel32 
 cd ..
 
 echo 40 > /tmp/tradfri_dep
