@@ -213,14 +213,16 @@ function Tradfri (host, key, port, debuglevel){
 						url : id,
 						name : json['9001'],
 						//scene_ID: json['9039'],
+						lastseen : 1, //Tjs pour les groupes
+						reachable : 1, //Tjs pour les groupes					
 						onoff :  json['5850'],
 						dimmer :  json['5851'],
-						color :  json['5706'],
-						colorX :  json['5709'],
-						colorY :  json['5710'],
+						//color :  json['5706'],
+						//colorX :  json['5709'],
+						//colorY :  json['5710'],
 					};
 				};
-				//if(obs) this.observeDevice(id);
+				if(obs) this.observeDevice(id);
 				if (callback) callback(null);
 			};
 		});
@@ -355,76 +357,136 @@ function Tradfri (host, key, port, debuglevel){
 				var model = '';
 				var firmware = '';
 				//console.log(json)
-				if(json['3311']){
-					if (json['3311'][0]['5850']) onoff = json['3311'][0]['5850'];
-					if (json['3311'][0]['5851']) dimmer = json['3311'][0]['5851'];
-					if (json['3311'][0]['5706']) color = json['3311'][0]['5706'];
-					if (json['3311'][0]['5709']) colorX = json['3311'][0]['5709'];
-					if (json['3311'][0]['5710']) colorY = json['3311'][0]['5710'];
-				}
-				if(json['3']){
-					if (json['3']['0']) manufacturer = json['3']['0'];
-					if (json['3']['0']) model = json['3']['0'];
-					if (json['3']['0']) firmware = json['3']['3'];
-				}
+				
 				if(cthis.devices[instance_id]){
 					var isStateChange = false;
 					//console.log('Device '+instance_id+' trouvé');
 					var device = cthis.devices[instance_id];
-					//console.log('-----')
-					//console.log(device);
-					device.manufacturer = manufacturer;
-					device.model = model;
-					device.firmware = firmware;								
-					switch (device.type) {
-						case 0: //controleur
-							isStateChange = isStateChange||(device.lastseen!=lastseen);
-							isStateChange = isStateChange||(device.reachable!=reachable);
-							cthis.devices[instance_id].lastseen = onoff;
-							cthis.devices[instance_id].reachable = reachable;						
-							log.debug('Type 0 (Controleur)');
-							log.debug('lastseen : ' + device.lastseen+ ' --> ' + lastseen);
-							log.debug('reachable : ' + device.reachable+ ' --> ' + reachable);
-							if(isStateChange){
-								cthis.devices[instance_id].lastseen = onoff;
-								cthis.devices[instance_id].reachable = reachable;
-								cthis.emit("state", JSON.stringify(cthis.devices[instance_id]));		
+					console.log('-----')
+					console.log(device);
+					switch (device.tradfri_type){
+						case TRADFRI_TYPE_DEVICE :
+							if(json['3311']){
+								if (json['3311'][0]['5850']) onoff = json['3311'][0]['5850'];
+								if (json['3311'][0]['5851']) dimmer = json['3311'][0]['5851'];
+								if (json['3311'][0]['5706']) color = json['3311'][0]['5706'];
+								if (json['3311'][0]['5709']) colorX = json['3311'][0]['5709'];
+								if (json['3311'][0]['5710']) colorY = json['3311'][0]['5710'];
+							}
+							if(json['3']){
+								if (json['3']['0']) manufacturer = json['3']['0'];
+								if (json['3']['0']) model = json['3']['0'];
+								if (json['3']['0']) firmware = json['3']['3'];
+							}
+							device.manufacturer = manufacturer;
+							device.model = model;
+							device.firmware = firmware;	
+							switch (device.type) {
+								case 0: //controleur
+									isStateChange = isStateChange||(device.lastseen!=lastseen);
+									isStateChange = isStateChange||(device.reachable!=reachable);
+									cthis.devices[instance_id].lastseen = onoff;
+									cthis.devices[instance_id].reachable = reachable;						
+									log.debug('Type 0 (Controleur)');
+									log.debug('lastseen : ' + device.lastseen+ ' --> ' + lastseen);
+									log.debug('reachable : ' + device.reachable+ ' --> ' + reachable);
+									if(isStateChange){
+										cthis.devices[instance_id].lastseen = lastseen;
+										cthis.devices[instance_id].reachable = reachable;
+										cthis.emit("state", JSON.stringify(cthis.devices[instance_id]));		
+									}
+									break;
+								case 1: //Groupe
+									isStateChange = isStateChange||(device.lastseen!=lastseen);
+									isStateChange = isStateChange||(device.reachable!=reachable);
+									isStateChange = isStateChange||(device.onoff!=onoff);
+									isStateChange = isStateChange||(device.dimmer!=dimmer);
+									isStateChange = isStateChange||(device.color!=color);
+									isStateChange = isStateChange||(device.colorX!=colorX);
+									isStateChange = isStateChange||(device.colorY!=colorY);
+									log.debug('Type 1 (Groupe)');
+									log.debug('lastseen : ' + device.lastseen+ ' --> ' + lastseen);
+									log.debug('reachable : ' + device.reachable+ ' --> ' + reachable);
+									log.debug('onoff : ' + device.onoff+ ' --> ' + onoff);
+									log.debug('dimmer : ' + device.dimmer+ ' --> ' + dimmer);
+									log.debug('color : ' + device.color+ ' --> ' + color);
+									log.debug('colorX : ' + device.colorX+ ' --> ' + colorX);
+									log.debug('colorY : ' + device.colorY+ ' --> ' + colorY);
+									if(isStateChange){
+										cthis.devices[instance_id].lastseen = lastseen;
+										cthis.devices[instance_id].reachable = reachable;
+										cthis.devices[instance_id].onoff = onoff;
+										cthis.devices[instance_id].dimmer = dimmer;								
+										cthis.devices[instance_id].color = color;	
+										cthis.devices[instance_id].colorX = colorX;	
+										cthis.devices[instance_id].colorY = colorY;	
+										if(cthis.timer) clearTimeout(cthis.timer); //Si un timer est en place, on le kill								
+										//on attend 0,25s avant d'envoyer l'état (sans activité) pour eviter de surcharger de message
+										cthis.timer = setTimeout(() => {
+											cthis.emit("state", JSON.stringify(cthis.devices[instance_id]));		
+										}, 250);
+									}
+									break;
+								case 2: //light	
+									isStateChange = isStateChange||(device.lastseen!=lastseen);
+									isStateChange = isStateChange||(device.reachable!=reachable);
+									isStateChange = isStateChange||(device.onoff!=onoff);
+									isStateChange = isStateChange||(device.dimmer!=dimmer);
+									isStateChange = isStateChange||(device.color!=color);
+									isStateChange = isStateChange||(device.colorX!=colorX);
+									isStateChange = isStateChange||(device.colorY!=colorY);
+									log.debug('Type 2 (Light)');
+									log.debug('lastseen : ' + device.lastseen+ ' --> ' + lastseen);
+									log.debug('reachable : ' + device.reachable+ ' --> ' + reachable);
+									log.debug('onoff : ' + device.onoff+ ' --> ' + onoff);
+									log.debug('dimmer : ' + device.dimmer+ ' --> ' + dimmer);
+									log.debug('color : ' + device.color+ ' --> ' + color);
+									log.debug('colorX : ' + device.colorX+ ' --> ' + colorX);
+									log.debug('colorY : ' + device.colorY+ ' --> ' + colorY);
+									//console.log(device);																					
+									if(isStateChange){
+										cthis.devices[instance_id].lastseen = lastseen;
+										cthis.devices[instance_id].reachable = reachable;
+										cthis.devices[instance_id].onoff = onoff;
+										cthis.devices[instance_id].dimmer = dimmer;								
+										cthis.devices[instance_id].color = color;	
+										cthis.devices[instance_id].colorX = colorX;	
+										cthis.devices[instance_id].colorY = colorY;	
+										if(cthis.timer) clearTimeout(cthis.timer); //Si un timer est en place, on le kill								
+										//on attend 0,25s avant d'envoyer l'état (sans activité) pour eviter de surcharger de message
+										cthis.timer = setTimeout(() => {
+											cthis.emit("state", JSON.stringify(cthis.devices[instance_id]));		
+										}, 250);
+
+									}							
+									break;							
 							}
 							break;
-						case 2: //light	
-							isStateChange = isStateChange||(device.lastseen!=lastseen);
-							isStateChange = isStateChange||(device.reachable!=reachable);
+
+						case TRADFRI_TYPE_GROUP :
+							if (json['5850']) onoff = json['5850'];
+							if (json['5851']) dimmer = json['5851'];														
 							isStateChange = isStateChange||(device.onoff!=onoff);
-							isStateChange = isStateChange||(device.dimmer!=dimmer);
-							isStateChange = isStateChange||(device.color!=color);
-							isStateChange = isStateChange||(device.colorX!=colorX);
-							isStateChange = isStateChange||(device.colorY!=colorY);
-							log.debug('Type 2 (Light)');
-							log.debug('lastseen : ' + device.lastseen+ ' --> ' + lastseen);
-							log.debug('reachable : ' + device.reachable+ ' --> ' + reachable);
+							isStateChange = isStateChange||(device.dimmer!=dimmer);							
+							log.debug('Type Groupe');							
 							log.debug('onoff : ' + device.onoff+ ' --> ' + onoff);
-							log.debug('dimmer : ' + device.dimmer+ ' --> ' + dimmer);
-							log.debug('color : ' + device.color+ ' --> ' + color);
-							log.debug('colorX : ' + device.colorX+ ' --> ' + colorX);
-							log.debug('colorY : ' + device.colorY+ ' --> ' + colorY);
-							//console.log(device);																					
-							if(isStateChange){
-								cthis.devices[instance_id].lastseen = onoff;
-								cthis.devices[instance_id].reachable = reachable;
+							log.debug('dimmer : ' + device.dimmer+ ' --> ' + dimmer);							
+							if(isStateChange){			
+								cthis.devices[instance_id].lastseen = 1; //Tjs pour les groupes
+								cthis.devices[instance_id].reachable = 1; //Tjs pour les groupes					
 								cthis.devices[instance_id].onoff = onoff;
-								cthis.devices[instance_id].dimmer = dimmer;								
-								cthis.devices[instance_id].color = color;	
-								cthis.devices[instance_id].colorX = colorX;	
-								cthis.devices[instance_id].colorY = colorY;	
+								cthis.devices[instance_id].dimmer = dimmer;																
 								if(cthis.timer) clearTimeout(cthis.timer); //Si un timer est en place, on le kill								
 								//on attend 0,25s avant d'envoyer l'état (sans activité) pour eviter de surcharger de message
 								cthis.timer = setTimeout(() => {
 									cthis.emit("state", JSON.stringify(cthis.devices[instance_id]));		
 								}, 250);
+							}
+							break;
 
-							}							
-							break;							
-					}
+						case TRADFRI_TYPE_GATEWAY :
+							break;
+					}												
 				}else{
 					log.error('DEVICE NON TROUVE '+instance_id)
 					cthis.emit("error", {err:1, msg:'DEVICE NON TROUVE '+instance_id});	
